@@ -2,12 +2,13 @@
 @* @using MudBlazor *@
 @using Subscriptions.Web.Requests
 @inject SubscriptionService subscriptionService
+@inject ILogger<SubscriptionService> logger
 
 <PageTitle>Subscription Manager</PageTitle>
 
 <h1>Welcome to Subscription Manager</h1>
 
-<p><strong>The @message!</strong></p>
+<p><strong>The @_message!</strong></p>
 @if (subscriptionTypes == null)
 {
     <p><em>Loading...</em></p>
@@ -43,19 +44,30 @@ else
 }
 
 @code {
-    private string? message = string.Empty;
+    private string? _message = string.Empty;
     private IEnumerable<SubscriptionType>? subscriptionTypes;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            message = await subscriptionService.TestServerApi();
+            _message = await subscriptionService.TestServerApi();
             subscriptionTypes = await subscriptionService.GetSubscriptionTypesAsync();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogWarning(ex, "Request was canceled");
+            Console.WriteLine("Request was canceled: " + ex.Message);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Request error");
+            Console.WriteLine("Request error: " + ex.Message);
         }
         catch (Exception ex)
         {
-            message = ex.Message;
+            logger.LogError(ex, "An error occurred");
+            _message = ex.Message;
         }
     }
 }
