@@ -1,27 +1,30 @@
 ﻿@page "/"
+@* @using MudBlazor *@
 @using Subscriptions.Web.Requests
 @inject SubscriptionService subscriptionService
 
-<PageTitle>Subscriptions</PageTitle>
+<PageTitle>Subscription Manager</PageTitle>
 
 <h1>Welcome to Subscription Manager</h1>
 
 <p><strong>The @message!</strong></p>
-
 @if (subscriptionTypes == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-<table class="table">
+    <table class="table table-hover table-bordered">
     <thead>
+        <tr>
+            <th colspan="5" style="text-align:center;">Subscription Types</th>
+        </tr>
         <tr>
             <th>Id</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Price Monthly</th>
-            <th>Price Yearly</th>
+            <th style="text-align:center;">Price Monthly</th>
+            <th style="text-align:center;">Price Yearly</th>
         </tr>
     </thead>
     <tbody>
@@ -31,8 +34,8 @@ else
                 <td>@subscriptionType.Id</td>
                 <td>@subscriptionType.Name</td>
                 <td>@subscriptionType.Description</td>
-                <td>@subscriptionType.PriceMonthly</td>
-                <td>@subscriptionType.PriceYearly</td>
+                <td style="text-align:center;">@subscriptionType.PriceMonthly.ToString("C")</td>
+                <td style="text-align:center;">@subscriptionType.PriceYearly.ToString("C")</td>
             </tr>
         }
     </tbody>
