@@ -1,0 +1,58 @@
+﻿@page "/"
+@using Subscriptions.Web.Requests
+@inject SubscriptionService subscriptionService
+
+<PageTitle>Subscriptions</PageTitle>
+
+<h1>Welcome to Subscription Manager</h1>
+
+<p><strong>The @message!</strong></p>
+
+@if (subscriptionTypes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price Monthly</th>
+            <th>Price Yearly</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var subscriptionType in subscriptionTypes)
+        {
+            <tr>
+                <td>@subscriptionType.Id</td>
+                <td>@subscriptionType.Name</td>
+                <td>@subscriptionType.Description</td>
+                <td>@subscriptionType.PriceMonthly</td>
+                <td>@subscriptionType.PriceYearly</td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+
+@code {
+    private string? message = string.Empty;
+    private IEnumerable<SubscriptionType>? subscriptionTypes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            message = await subscriptionService.TestServerApi();
+            subscriptionTypes = await subscriptionService.GetSubscriptionTypesAsync();
+        }
+        catch (Exception ex)
+        {
+            message = ex.Message;
+        }
+    }
+}
